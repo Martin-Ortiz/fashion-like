@@ -50,5 +50,12 @@ public class UsuarioController {
 		return new ResponseEntity<>(mensajes, HttpStatus.OK);
 	}
 	
-	
+	@PostMapping("/actualizar")
+	public ResponseEntity<?> postActualizarUsuario(@Valid @RequestBody RequestManipularRegistro datosRegistro){
+		Map<String, String> mensajes = new HashMap<>();
+		
+		String mensaje = service.actualizarUsuario(datosRegistro);
+		mensajes.put("Mensaje", mensaje);
+		return new ResponseEntity<>(mensajes,HttpStatus.OK);
+	}
 }

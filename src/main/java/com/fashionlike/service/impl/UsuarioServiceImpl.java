@@ -13,6 +13,7 @@ import com.fashionlike.repository.UsuarioRepository;
 import com.fashionlike.request.RequestManipularRegistro;
 import com.fashionlike.request.RequestRegistro;
 import com.fashionlike.service.IUsuarioService;
+import com.fashionlike.utils.Util;
 
 @Service
 public class UsuarioServiceImpl implements IUsuarioService {
@@ -74,5 +75,31 @@ public class UsuarioServiceImpl implements IUsuarioService {
 		
 		
 		
+	}
+
+	@Override
+	@Transactional
+	public String actualizarUsuario(RequestManipularRegistro datosRegistro) {
+		Usuario actualizarUsuario = repositoryUser.findByEmail(datosRegistro.getEmail());
+		System.out.println("Datos: " + actualizarUsuario);
+		System.out.println("Datos-Actualizacion: " + Util.validarDatos(actualizarUsuario, datosRegistro));
+		
+		if (actualizarUsuario != null) {
+			Usuario datosActualizados = Util.validarDatos(actualizarUsuario, datosRegistro);
+			if (datosActualizados.equals(actualizarUsuario)) {
+				return "Sin datos para actualizar baby.";
+			}
+			try {
+				repositoryUser.save(datosActualizados);
+				return "Usuario Actualizado";
+				
+			} catch (Exception e) {
+				throw new RuntimeException("Error al actualizar el usuario");
+			}
+			
+		}else {
+			return "El usuario con email proporcionado no existe.";
+		}
+
 	}
 }

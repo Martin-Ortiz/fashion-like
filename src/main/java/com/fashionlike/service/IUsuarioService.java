@@ -12,4 +12,6 @@ public interface IUsuarioService {
 	String registrarUsuario(RequestRegistro datosRegistro);
 	
 	String eliminarUsuario(RequestManipularRegistro datosRegistro);
+	
+	String actualizarUsuario(RequestManipularRegistro datosRegistro);
 }
