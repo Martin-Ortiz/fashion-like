@@ -1,6 +1,8 @@
 package com.fashionlike.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fashionlike.entity.Usuario;
+import com.fashionlike.request.RequestManipularRegistro;
 import com.fashionlike.request.RequestRegistro;
 import com.fashionlike.service.IUsuarioService;
 
@@ -30,9 +33,22 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/guardar")
-	public ResponseEntity<String> guardarUsuario(@Valid @RequestBody RequestRegistro requestRegistro){
+	public ResponseEntity<?> guardarUsuario(@Valid @RequestBody RequestRegistro requestRegistro){
+		HashMap<String, String> mensajes = new HashMap<>();
+		
 		String mensaje = service.registrarUsuario(requestRegistro);
-		return new ResponseEntity<String>(mensaje, HttpStatus.OK);
+		mensajes.put("Mensaje", mensaje);
+		return new ResponseEntity<>(mensajes, HttpStatus.OK);
 	}
+	
+	@PostMapping("/eliminar")
+	public ResponseEntity<?> postEliminarUsuario(@Valid @RequestBody RequestManipularRegistro datosRegistro) {
+		Map<String, String> mensajes = new HashMap<>();
+		
+		String mensaje = service.eliminarUsuario(datosRegistro);
+		mensajes.put("Mensaje", mensaje);
+		return new ResponseEntity<>(mensajes, HttpStatus.OK);
+	}
+	
 	
 }

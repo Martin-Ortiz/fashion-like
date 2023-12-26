@@ -37,4 +37,6 @@ public class Usuario implements Serializable {
 	@Column (name = "FECHA_REGISTRO")
 	private Date fechaRegistro;
 	
+	
+	
 }

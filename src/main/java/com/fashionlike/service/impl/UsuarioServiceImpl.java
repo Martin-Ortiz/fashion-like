@@ -2,11 +2,15 @@ package com.fashionlike.service.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fashionlike.entity.Usuario;
+import com.fashionlike.repository.PasswordRepository;
 import com.fashionlike.repository.UsuarioRepository;
+import com.fashionlike.request.RequestManipularRegistro;
 import com.fashionlike.request.RequestRegistro;
 import com.fashionlike.service.IUsuarioService;
 
@@ -14,30 +18,61 @@ import com.fashionlike.service.IUsuarioService;
 public class UsuarioServiceImpl implements IUsuarioService {
 
 	@Autowired
-	UsuarioRepository repository;
+	UsuarioRepository repositoryUser;
+	
+	@Autowired
+	PasswordRepository repositoryPass;
 	
 	@Override
 	public List<Usuario> listarUsuarios() {
-		return repository.findAll();
+		return repositoryUser.findAll();
 	}
 
 	@Override
 	public String registrarUsuario(RequestRegistro datosRegistro) {
 		
-		String[] outMessage = repository.callRegistrarUsuario(
+		String outMessage = repositoryUser.registrarUsuario(
 				datosRegistro.getNombre(),
 				datosRegistro.getApellidoPaterno(),
 				datosRegistro.getApellidoMaterno(),
 				datosRegistro.getEmail(),
 				datosRegistro.getPassword()
         );
-
+		
         // Puedes hacer algo con el resultado, como imprimirlo en el registro o manejarlo de otra manera.
-        System.out.println("Resultado del procedimiento almacenado: " + String.join(", ", outMessage));
+        System.out.println("Resultado del procedimiento almacenado: " + outMessage);
 		
 		
 		
-		return outMessage[0];
+		return outMessage;
 	}
 
+	@Override
+	@Transactional
+	public String eliminarUsuario(RequestManipularRegistro datosRegistro) {
+		
+		Usuario eliminarUsuario = repositoryUser.findByEmail(datosRegistro.getEmail());
+		System.out.println("Datos: " + eliminarUsuario);
+		try {
+			if (eliminarUsuario == null) {
+				return "El usuario con email proporcionado no existe.";
+			}else {
+				
+				int usuarioEliminado = repositoryUser.deleteByEmail(datosRegistro.getEmail());
+				int passwordEliminado = repositoryPass.deleteByIdPassword(eliminarUsuario.getIdPassword());
+				
+				if(usuarioEliminado > 0 && passwordEliminado > 0) {
+					return "Usuario eliminado con exito UwU: ";
+				}else {
+					
+					throw  new RuntimeException("No se pudo eliminar el registro.");
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error al eliminar el usuario");
+		}
+		
+		
+		
+	}
 }
