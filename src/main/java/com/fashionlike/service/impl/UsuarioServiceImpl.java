@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fashionlike.entity.Usuario;
+import com.fashionlike.exception.GenericException;
 import com.fashionlike.repository.PasswordRepository;
 import com.fashionlike.repository.UsuarioRepository;
 import com.fashionlike.request.RequestManipularRegistro;
@@ -65,12 +66,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
 				if(usuarioEliminado > 0 && passwordEliminado > 0) {
 					return "Usuario eliminado con exito UwU: ";
 				}else {
-					
 					throw  new RuntimeException("No se pudo eliminar el registro.");
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Error al eliminar el usuario");
+			throw new GenericException("Error al eliminar el usuario.",400);
 		}
 		
 		
